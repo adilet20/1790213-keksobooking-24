@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг»
 
 * Студент: [Adilet Egemberdiev](https://up.htmlacademy.ru/javascript/24/user/1790213).
-* Наставник: `Неизвестно`.
+* Наставник: [Ирина Черкасова](https://https://htmlacademy.ru/profile/raccoonlemon).
 
 ---
 
