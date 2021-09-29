@@ -6,19 +6,14 @@ function getRandomInt(min, max) {
 
 // https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/random  ссылку на источник!
 
-// eslint-disable-next-line no-unused-vars
-function getRandomFloat(from ,to, digits) {
-  const main = getRandomInt(from, to);
-  let float = '';
 
-  // eslint-disable-next-line id-length
-  for (let i = 0; i < digits; i++) {
-    float += getRandomInt(1, 9);
+function getRandomFloat(min, max, digits = 2) {
+  if (min >= max || min < 0) {
+    throw new Error;
   }
+  const randomFloat = Math.random() * (max - min) + min;
+  const result = randomFloat.toFixed(digits);
 
-
-  // eslint-disable-next-line prefer-template
-  const result =  main + '.' + float;
-  return parseFloat(result);
+  return result;
 }
 
