@@ -2,15 +2,6 @@
 
 const OFFERS_QUANTITY = 10;
 
-// address
-const MIN_LAT = 35.65000;
-const MAX_LAT = 35.70000;
-const PRECISION_LAT = 5;
-const MIN_LNG = 139.70000;
-const MAX_LNG = 139.80000;
-const PRECISION_LNG = 5;
-
-
 const AVATARS = {
   min: 1,
   max: 10,
@@ -86,6 +77,18 @@ const PHOTOS = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
 ];
 
+const LOCATION = {
+  lat: {
+    min: 35.65000,
+    max: 35.70000,
+  },
+  lng: {
+    min: 139.70000,
+    max: 139.80000,
+  },
+  number: 5,
+};
+
 function getRandomInt(min, max) {
   const lower = Math.ceil(Math.min(Math.abs(min), Math.abs(max)));
   const upper = Math.floor(Math.max(Math.abs(min), Math.abs(max)));
@@ -132,11 +135,9 @@ const createRandomInteger = (min, max) => {
 const getRandomArrayElement = (elements) => elements[getRandomInt(0, elements.length - 1)];
 
 const shuffleArray = (array) => {
-  // eslint-disable-next-line id-length
-  for (let i = array.length - 1; i > 0; i--) {
-    // eslint-disable-next-line id-length
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+  for (let index = array.length - 1; index > 0; index--) {
+    const ji = Math.floor(Math.random() * (index + 1));
+    [array[index], array[ji]] = [array[ji], array[index]];
   }
   return array;
 };
@@ -159,8 +160,8 @@ const createArray = (array) => {
 };
 
 const newOffer = () => {
-  const latitude = getRandomFloat(MIN_LAT, MAX_LAT, PRECISION_LAT);
-  const longitude = getRandomFloat(MIN_LNG, MAX_LNG, PRECISION_LNG);
+  const locationLat = Number(getRandomFloat(LOCATION.lat.min, LOCATION.lat.max, LOCATION.number));
+  const locationLng = Number(getRandomFloat(LOCATION.lng.min, LOCATION.lng.max, LOCATION.number));
 
   return {
     author: {
@@ -169,7 +170,7 @@ const newOffer = () => {
 
     offer: {
       title:  getRandomArrayElement(TITLES),
-      address: `${latitude}, ${longitude}`,
+      address: `${locationLat}, ${locationLng}`,
       price: getRandomInt(PRICES.min, PRICES.max),
       type: getRandomArrayElement(TYPES),
       rooms: getRandomInt(ROOMS.min, ROOMS.max),
@@ -182,8 +183,8 @@ const newOffer = () => {
     },
 
     location: {
-      lat: latitude,
-      lng: longitude,
+      lat: locationLat,
+      lng: locationLng,
     },
   };
 };
