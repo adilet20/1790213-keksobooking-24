@@ -6,7 +6,6 @@ export const getRandomInt = (min, max) => {
   return result;
 };
 
-
 export  const getRandomFloat = (min, max, digits = 2) => {
   if (min >= max || min < 0) {
     throw new Error;
