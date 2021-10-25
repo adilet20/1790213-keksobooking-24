@@ -136,5 +136,6 @@ const generateOffer = () => {
   };
 };
 
-export const getOffers = (amount) => Array.from({ length: amount }, generateOffer);
-getOffers(OFFERS_QUANTITY);
+const getOffers = (amount) => Array.from({ length: amount }, generateOffer);
+export const ads = getOffers(OFFERS_QUANTITY);
+

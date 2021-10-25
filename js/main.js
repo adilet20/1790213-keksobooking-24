@@ -1,2 +1,3 @@
-import {getOffers} from './data.js';
-getOffers();
+import {ads} from './data.js';
+import {createNewOffer} from './card.js';
+createNewOffer(ads[3]);
