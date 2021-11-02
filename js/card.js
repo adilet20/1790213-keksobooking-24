@@ -27,6 +27,7 @@ const createNewOffer = (item) => {
 
   const titleElement = getPopup.querySelector('.popup__title');
   const addressElement = getPopup.querySelector('.popup__text--address');
+  const priceText = item.offer.price ? `${item.offer.price} ₽/ночь`: '';
   const priceElement = getPopup.querySelector('.popup__text--price');
   const typeElement = getPopup.querySelector('.popup__type');
   const capacityElement = getPopup.querySelector('.popup__text--capacity');
@@ -49,7 +50,7 @@ const createNewOffer = (item) => {
 
   setElementContent(item.offer.title, titleElement);
   setElementContent(item.offer.address, addressElement);
-  setElementContent(`${item.offer.price} ₽/ночь`, priceElement);
+  setElementContent(priceText, priceElement);
   setElementContent(houseType[item.offer.type], typeElement);
   setElementContent(`${item.offer.rooms} комнаты для ${item.offer.guests} гостей`,  capacityElement);
   setElementContent(`Заезд после ${item.offer.checkin}, выезд до ${item.offer.checkout}`, timeElement);
@@ -64,7 +65,7 @@ const createNewOffer = (item) => {
   else {
     avatarElement.remove();
   }
-
+  photosElement.innerHTML = '';
   if (photosArray.length) {
     photosElement.append(...photosArray);
   }
