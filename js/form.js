@@ -29,11 +29,11 @@ const MAX_ROOMS = 100;
 
 
 const PRICES_OF_TYPES = {
-  bungalow: '0',
-  flat: '1000',
-  hotel: '3000',
-  house: '5000',
-  palace: '10000',
+  bungalow: 0,
+  flat: 1000,
+  hotel: 3000,
+  house: 5000,
+  palace: 10000,
 };
 
 const adTitle = adForm.querySelector('#title');
@@ -46,7 +46,7 @@ const adTimeOut = adForm.querySelector('#timeout');
 const formSubmit = document.querySelector('.ad-form__submit');
 
 
-const  onPriceInput = () => {
+const checkPrice = () => {
   if (adPrice.validity.valueMissing) {
     return adPrice.setCustomValidity('Пожалуйста, введите цену');
   } else if (adPrice.value < PRICES_OF_TYPES[adType.value]) {
@@ -56,7 +56,10 @@ const  onPriceInput = () => {
 };
 
 const checkCapacity = () => {
-  if (adRooms.value ===  String(MAX_ROOMS) && adCapacity.value !==  String( MAX_CAPACITY)) {
+  const rooms = parseInt(adRooms.value, 10);
+  const capacity= parseInt(adCapacity.value, 10);
+
+  if (rooms  === MAX_ROOMS && capacity !== MAX_CAPACITY) {
     return adCapacity.setCustomValidity('Выберите другой вариант');
   } else if (adRooms.value !==  String(MAX_ROOMS) && adCapacity.value ===  String( MAX_CAPACITY)) {
     return adCapacity.setCustomValidity('Выберите другой вариант');
@@ -85,7 +88,7 @@ adType.addEventListener('change', () => {
 });
 
 adPrice.addEventListener('input', () => {
-  onPriceInput();
+  checkPrice();
   adPrice.reportValidity();
 });
 
@@ -103,6 +106,6 @@ adTimeOut.addEventListener('change', () => {
 });
 
 formSubmit.addEventListener('click', () => {
-  onPriceInput();
+  checkPrice();
   checkCapacity();
 });
