@@ -1,3 +1,4 @@
+
 const adForm = document.querySelector('.ad-form');
 const mapFilters = document.querySelector('.map__filters');
 
@@ -15,15 +16,11 @@ const activateForm  = (form, disabledClass) => {
   }
 };
 
-export const makeActive = () => {
-  activateForm(adForm);
-  activateForm(mapFilters);
-};
 
-export const makeDisableForm = () => {
-  disableForm(adForm);
-  disableForm(mapFilters);
-};
+activateForm(adForm);
+activateForm(mapFilters);
+disableForm(adForm);
+disableForm(mapFilters);
 
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
@@ -113,3 +110,5 @@ formSubmit.addEventListener('click', () => {
   checkPrice();
   checkCapacity();
 });
+
+export {disableForm, activateForm, mapFilters, adForm};
