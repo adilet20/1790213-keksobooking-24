@@ -1,7 +1,9 @@
+// import { get } from "browser-sync";
+
 const popup = document.querySelector('#card').content.querySelector('.popup');
 const popupPotoElement = document.querySelector('#card').content.querySelector('.popup__photo');
-const mapCanvas = document.querySelector('#map-canvas');
-const getFragment = document.createDocumentFragment();
+// const mapCanvas = document.querySelector('#map-canvas');
+// const getFragment = document.createDocumentFragment();
 
 const  houseType = {
   flat: 'Квартира',
@@ -72,10 +74,10 @@ const createNewOffer = (item) => {
   else {
     photosElement.remove();
   }
+  return getPopup;
+  // getFragment.appendChild(getPopup);
 
-  getFragment.appendChild(getPopup);
-
-  return mapCanvas.appendChild(getFragment);
+  // return mapCanvas.appendChild(getFragment);
 };
 
 export {createNewOffer};
