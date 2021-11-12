@@ -1,9 +1,12 @@
 // import { get } from "browser-sync";
+import {checkElement, isEscapeKey} from './utils.js';
 
-const popup = document.querySelector('#card').content.querySelector('.popup');
+
+const cardTemplatePopup = document.querySelector('#card').content.querySelector('.popup');
 const popupPotoElement = document.querySelector('#card').content.querySelector('.popup__photo');
 // const mapCanvas = document.querySelector('#map-canvas');
 // const getFragment = document.createDocumentFragment();
+
 
 const  houseType = {
   flat: 'Квартира',
@@ -25,7 +28,7 @@ const generatePhoto = (array) => {
 };
 
 const createNewOffer = (item) => {
-  const getPopup = popup.cloneNode(true);
+  const getPopup = cardTemplatePopup.cloneNode(true);
 
   const titleElement = getPopup.querySelector('.popup__title');
   const addressElement = getPopup.querySelector('.popup__text--address');
@@ -35,7 +38,7 @@ const createNewOffer = (item) => {
   const capacityElement = getPopup.querySelector('.popup__text--capacity');
   const timeElement = getPopup.querySelector('.popup__text--time');
   const avatarElement = getPopup.querySelector('.popup__avatar');
-  const featuresElement = getPopup.querySelector('.popup__features');
+  // const featuresElement = getPopup.querySelector('.popup__features');
   const descriptionElement = getPopup.querySelector('.popup__description');
 
   const photosElement =getPopup.querySelector('.popup__photos');
@@ -56,9 +59,26 @@ const createNewOffer = (item) => {
   setElementContent(houseType[item.offer.type], typeElement);
   setElementContent(`${item.offer.rooms} комнаты для ${item.offer.guests} гостей`,  capacityElement);
   setElementContent(`Заезд после ${item.offer.checkin}, выезд до ${item.offer.checkout}`, timeElement);
-  setElementContent(item.offer.features, featuresElement);
+  // setElementContent(item.offer.features, featuresElement);
   setElementContent(item.offer.description, descriptionElement);
   setElementContent(item.offer.photos, photoElement);
+
+  const features = item.offer.features;
+  const featuresElement = getPopup.querySelector('.popup__features');
+  const popupFeatures =featuresElement.querySelectorAll('.popup__feature');
+
+  if (!checkElement(features)) {
+    popupFeatures.forEach((popupFeature) => {
+      const isNecessary = features.some(
+        (similarFeature) => popupFeature.classList.contains(`popup__feature--${similarFeature}`),
+      );
+      if (!isNecessary) {
+        popupFeature.remove();
+      }
+    });
+  }else {
+    featuresElement.remove();
+  }
 
   const avatar = item.author.avatar;
   if (avatar) {
@@ -80,4 +100,24 @@ const createNewOffer = (item) => {
   // return mapCanvas.appendChild(getFragment);
 };
 
-export {createNewOffer};
+const success = document.querySelector('#success').content.querySelector('.success');
+const error = document.querySelector('#error').content.querySelector('.error');
+const body = document.querySelector('body');
+const successClone = success.cloneNode(true);
+const errorClone = error.cloneNode(true);
+
+const appendInBody = function (element) {
+  body.appendChild(element);
+  document.addEventListener('keydown',(evt) => {
+    if (isEscapeKey(evt)) {
+      element.remove();
+    }
+  });
+  element.addEventListener('click', () => {
+    element.remove();
+  });
+};
+
+
+export {createNewOffer, successClone, errorClone, appendInBody};
+

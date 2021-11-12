@@ -1,3 +1,4 @@
+import  {resetMarker} from './map.js';
 
 const adForm = document.querySelector('.ad-form');
 const mapFilters = document.querySelector('.map__filters');
@@ -44,8 +45,8 @@ const adCapacity = adForm.querySelector('#capacity');
 const adRooms = adForm.querySelector('#room_number');
 const adTimeIn = adForm.querySelector('#timein');
 const adTimeOut = adForm.querySelector('#timeout');
-const formSubmit = document.querySelector('.ad-form__submit');
-
+const submitButton = document.querySelector('.ad-form__submit');
+// const resetButton = document.querySelector('.ad-form__reset');
 
 const checkPrice = () => {
   if (adPrice.validity.valueMissing) {
@@ -61,11 +62,11 @@ const checkCapacity = () => {
   const capacity= parseInt(adCapacity.value, 10);
 
   if (rooms  === MAX_ROOMS && capacity !== MAX_CAPACITY) {
-    return adCapacity.setCustomValidity('Выберите другой вариант');
+    return adCapacity.setCustomValidity('Не для гостей. Выберите другой вариант');
   } else if (adRooms.value !==  String(MAX_ROOMS) && adCapacity.value ===  String( MAX_CAPACITY)) {
-    return adCapacity.setCustomValidity('Выберите другой вариант');
+    return adCapacity.setCustomValidity('Измените количества гостей');
   } else if (adCapacity.value > adRooms.value) {
-    return adCapacity.setCustomValidity('Выберите другой вариант');
+    return adCapacity.setCustomValidity('Не должно превышать количество костей. Выберите другой вариант');
   }
   return adCapacity.setCustomValidity('');
 };
@@ -106,9 +107,20 @@ adTimeOut.addEventListener('change', () => {
   adTimeIn.value = adTimeOut.value;
 });
 
-formSubmit.addEventListener('click', () => {
+submitButton.addEventListener('click', () => {
   checkPrice();
   checkCapacity();
 });
 
-export {disableForm, activateForm, mapFilters, adForm};
+const clearForm = () => {
+  adForm.reset();
+  mapFilters.reset();
+};
+
+const resetForm = () => {
+  clearForm();
+  resetMarker();
+};
+
+
+export {disableForm, activateForm, mapFilters, adForm,  resetForm};

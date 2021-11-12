@@ -1,6 +1,5 @@
-import {disableForm, activateForm, mapFilters, adForm} from './form.js';
-import {ads} from './data.js';
 import {createNewOffer} from './card.js';
+import{disableForm, activateForm, mapFilters, adForm, resetForm} from './form.js';
 
 const mapCoordinates = {
   lat: 35.682272,
@@ -54,60 +53,42 @@ mainMarker.on('moveend', (evt) => {
   address.value = `${evt.target.getLatLng().lat.toFixed(5)}, ${evt.target.getLatLng().lng.toFixed(5)}`;
 });
 
-const createMarker = (element) => {
-  const pin = L.icon({
-    iconUrl: 'img/pin.svg',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
+const createMarker = (offers) => {
+  offers.forEach((element) =>{
+
+    const pin = L.icon({
+      iconUrl: 'img/pin.svg',
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+    });
+
+    const marker = L.marker(
+      {
+        lat: element.location.lat,
+        lng: element.location.lng,
+      },
+      {
+        icon:pin,
+      },
+    );
+
+    marker
+      .addTo(mapCanvas)
+      .bindPopup(createNewOffer(element));
   });
-
-  const marker = L.marker(
-    {
-      lat: element.location.lat,
-      lng: element.location.lng,
-    },
-    {
-      icon:pin,
-    },
-  );
-
-  marker
-    .addTo(mapCanvas)
-    .bindPopup(createNewOffer(element));
 };
 
-
-ads.forEach((point) => {
-  createMarker(point);
-});
-
-// ads.forEach((element) => {
-
-//   const pin = L.icon({
-//     iconUrl: 'img/pin.svg',
-//     iconSize: [40, 40],
-//     iconAnchor: [20, 40],
-//   });
-
-//   const marker = L.marker(
-//     {
-//       lat: element.location.lat,
-//       lng: element.location.lng,
-//     },
-//     {
-//       icon:pin,
-//     },
-//   );
-
-//   marker
-//     .addTo(mapCanvas)
-//     .bindPopup(createNewOffer(element));
-// });
-
-resetButton.addEventListener('click', () => {
+const resetMarker = () => {
   mainMarker.setLatLng({
     lat: mapCoordinates.lat,
     lng: mapCoordinates.lng,
   });
   address.value = `${mainMarker.getLatLng().lat.toFixed(5)}, ${mainMarker.getLatLng().lng.toFixed(5)}`;
+};
+
+
+resetButton.addEventListener('click', () => {
+  resetForm();
 });
+
+export {createMarker, resetMarker};
