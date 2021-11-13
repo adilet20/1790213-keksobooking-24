@@ -85,49 +85,37 @@ const createNewOffer = (item) => {
 const successPopup = document.querySelector('#success').content.querySelector('.success');
 const errorPopup = document.querySelector('#error').content.querySelector('.error');
 
-const onSuccessPopupClick = () => removeSuccessPopup();
-const onErrorPopupClick = () => removeErrorPopup();
-
-const onSuccessPopupEscKeydown = (evt) => {
-  if (isEscapeKey(evt)) {
-    evt.preventDefault();
-    removeSuccessPopup();
-  }
-};
-const onErrorPopupEscKeydown = (evt) => {
-  if (isEscapeKey(evt)) {
-    evt.preventDefault();
-    removeErrorPopup();
-  }
-};
-
-const createSuccessPopup = () => {
-  const popup = successPopup.cloneNode(true);
+const showPopup = (popupTemplate) => {
+  const popup = popupTemplate.cloneNode(true);
   document.body.append(popup);
-  document.addEventListener('click', onSuccessPopupClick);
-  document.addEventListener('keydown', onSuccessPopupEscKeydown);
+
+  let onEscKeyDown = () => {};
+  let onDocumentClick = () => {};
+
+
+  const removePopup = () => {
+    popup.remove();
+    document.removeEventListener('keydown', onEscKeyDown);
+    document.removeEventListener('click', onDocumentClick);
+  };
+
+  onEscKeyDown = (evt) => {
+    if (isEscapeKey(evt)) {
+      evt.preventDefault();
+      removePopup();
+    }
+  };
+
+  onDocumentClick = () => {
+    removePopup();
+    document.removeEventListener('click', onEscKeyDown);
+  };
+
+  document.addEventListener('click', onDocumentClick);
+  document.addEventListener('keydown', onEscKeyDown);
 };
-
-function removeSuccessPopup() {
-  const newSuccessPopup = document.querySelector('body > .success');
-  newSuccessPopup.remove();
-  document.removeEventListener('click', onSuccessPopupClick);
-  document.removeEventListener('keydown', onSuccessPopupEscKeydown);
-}
-
-const createErrorPopup = () => {
-  const popup = errorPopup.cloneNode(true);
-  document.body.append(popup);
-  document.addEventListener('click', onErrorPopupClick);
-  document.addEventListener('keydown', onErrorPopupEscKeydown);
-};
-
-function removeErrorPopup() {
-  const newErrorPopup = document.querySelector('body > .error');
-  newErrorPopup.remove();
-  document.removeEventListener('click', onErrorPopupClick);
-  document.removeEventListener('keydown', onErrorPopupEscKeydown);
-}
+const createSuccessPopup = () => showPopup(successPopup);
+const createErrorPopup = () => showPopup(errorPopup);
 
 
 export {createNewOffer,  createSuccessPopup, createErrorPopup};
