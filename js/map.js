@@ -1,5 +1,5 @@
 import {createNewOffer} from './card.js';
-import{disableForm, activateForm, mapFilters, adForm, resetForm} from './form.js';
+import{ activateForm, mapFilters, adForm, resetForm} from './form.js';
 
 const mapCoordinates = {
   lat: 35.682272,
@@ -9,26 +9,6 @@ const mapCoordinates = {
 
 const resetButton = document.querySelector('.ad-form__reset');
 const address = document.querySelector('#address');
-
-disableForm(adForm);
-disableForm(mapFilters);
-
-const mapCanvas = L.map('map-canvas')
-  .on('load', () => {
-    activateForm(adForm);
-    activateForm(mapFilters);
-  })
-  .setView({
-    lat: mapCoordinates.lat,
-    lng: mapCoordinates.lng,
-  }, 14);
-
-L.tileLayer(
-  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  },
-).addTo(mapCanvas);
 
 const mainPin = L.icon({
   iconUrl: 'img/main-pin.svg',
@@ -46,12 +26,31 @@ const mainMarker = L.marker(
     icon: mainPin,
   },
 );
+let mapCanvas;
 
-mainMarker.addTo(mapCanvas);
+const initMap = () => {
+  mapCanvas = L.map('map-canvas')
+    .on('load', () => {
+      activateForm(adForm);
+      activateForm(mapFilters);
+    })
+    .setView({
+      lat: mapCoordinates.lat,
+      lng: mapCoordinates.lng,
+    }, 14);
 
-mainMarker.on('moveend', (evt) => {
-  address.value = `${evt.target.getLatLng().lat.toFixed(5)}, ${evt.target.getLatLng().lng.toFixed(5)}`;
-});
+  L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    },
+  ).addTo(mapCanvas);
+
+  mainMarker.addTo(mapCanvas);
+  mainMarker.on('moveend', (evt) => {
+    address.value = `${evt.target.getLatLng().lat.toFixed(5)}, ${evt.target.getLatLng().lng.toFixed(5)}`;
+  });
+};
 
 const createMarker = (offers) => {
   offers.forEach((element) =>{
@@ -91,4 +90,4 @@ resetButton.addEventListener('click', () => {
   resetForm();
 });
 
-export {createMarker, resetMarker};
+export {createMarker, resetMarker, initMap};

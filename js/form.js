@@ -66,7 +66,7 @@ const checkCapacity = () => {
   } else if (adRooms.value !==  String(MAX_ROOMS) && adCapacity.value ===  String( MAX_CAPACITY)) {
     return adCapacity.setCustomValidity('Измените количества гостей');
   } else if (adCapacity.value > adRooms.value) {
-    return adCapacity.setCustomValidity('Не должно превышать количество костей. Выберите другой вариант');
+    return adCapacity.setCustomValidity('Не должно превышать количество гостей. Выберите другой вариант');
   }
   return adCapacity.setCustomValidity('');
 };

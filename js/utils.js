@@ -71,9 +71,4 @@ export const showAlert = (message) => {
 
 export const isEscapeKey = (evt) => evt.key === 'Escape';
 
-export const checkElement = (element) => {
-  if (element === '' || element === undefined || element.length === 0) {
-    return true;
-  }
-  return false;
-};
+

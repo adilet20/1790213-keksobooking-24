@@ -1,12 +1,8 @@
 // import { get } from "browser-sync";
-import {checkElement, isEscapeKey} from './utils.js';
+import {isEscapeKey} from './utils.js';
 
 
 const cardTemplatePopup = document.querySelector('#card').content.querySelector('.popup');
-const popupPotoElement = document.querySelector('#card').content.querySelector('.popup__photo');
-// const mapCanvas = document.querySelector('#map-canvas');
-// const getFragment = document.createDocumentFragment();
-
 
 const  houseType = {
   flat: 'Квартира',
@@ -16,34 +12,18 @@ const  houseType = {
   hotel: 'Отель',
 };
 
-//photo generator
-const generatePhoto = (array) => {
-  const popupPhotoContainer = [];
-  array.forEach((item) => {
-    const popupPhotoItem =  popupPotoElement.cloneNode(true);
-    popupPhotoItem.src = item;
-    popupPhotoContainer.push( popupPhotoItem);
-  });
-  return popupPhotoContainer;
-};
-
 const createNewOffer = (item) => {
-  const getPopup = cardTemplatePopup.cloneNode(true);
+  const popupTemplate = cardTemplatePopup.cloneNode(true);
 
-  const titleElement = getPopup.querySelector('.popup__title');
-  const addressElement = getPopup.querySelector('.popup__text--address');
+  const titleElement = popupTemplate.querySelector('.popup__title');
+  const addressElement = popupTemplate.querySelector('.popup__text--address');
   const priceText = item.offer.price ? `${item.offer.price} ₽/ночь`: '';
-  const priceElement = getPopup.querySelector('.popup__text--price');
-  const typeElement = getPopup.querySelector('.popup__type');
-  const capacityElement = getPopup.querySelector('.popup__text--capacity');
-  const timeElement = getPopup.querySelector('.popup__text--time');
-  const avatarElement = getPopup.querySelector('.popup__avatar');
-  // const featuresElement = getPopup.querySelector('.popup__features');
-  const descriptionElement = getPopup.querySelector('.popup__description');
-
-  const photosElement =getPopup.querySelector('.popup__photos');
-  const photoElement = photosElement.querySelector('.popup__photo');
-  const photosArray = generatePhoto(item.offer.photos);
+  const priceElement = popupTemplate.querySelector('.popup__text--price');
+  const typeElement = popupTemplate.querySelector('.popup__type');
+  const capacityElement = popupTemplate.querySelector('.popup__text--capacity');
+  const timeElement = popupTemplate.querySelector('.popup__text--time');
+  const avatarElement = popupTemplate.querySelector('.popup__avatar');
+  const descriptionElement =popupTemplate.querySelector('.popup__description');
 
   const setElementContent = (itemValue, element) => {
     if (!itemValue) {
@@ -59,15 +39,27 @@ const createNewOffer = (item) => {
   setElementContent(houseType[item.offer.type], typeElement);
   setElementContent(`${item.offer.rooms} комнаты для ${item.offer.guests} гостей`,  capacityElement);
   setElementContent(`Заезд после ${item.offer.checkin}, выезд до ${item.offer.checkout}`, timeElement);
-  // setElementContent(item.offer.features, featuresElement);
   setElementContent(item.offer.description, descriptionElement);
-  setElementContent(item.offer.photos, photoElement);
+
+  const photosElement =popupTemplate.querySelector('.popup__photos');
+  const photoElement = photosElement.querySelector('.popup__photo');
+
+  if (Array.isArray(item.offer.photos)) {
+    for (const photo of item.offer.photos) {
+      const photoClone = photoElement.cloneNode(true);
+      photoClone.src = photo;
+      photosElement.appendChild(photoClone);
+    }
+    photoElement.remove();
+  } else {
+    photosElement.remove();
+  }
 
   const features = item.offer.features;
-  const featuresElement = getPopup.querySelector('.popup__features');
+  const featuresElement = popupTemplate.querySelector('.popup__features');
   const popupFeatures =featuresElement.querySelectorAll('.popup__feature');
 
-  if (!checkElement(features)) {
+  if (Array.isArray(features)) {
     popupFeatures.forEach((popupFeature) => {
       const isNecessary = features.some(
         (similarFeature) => popupFeature.classList.contains(`popup__feature--${similarFeature}`),
@@ -87,37 +79,56 @@ const createNewOffer = (item) => {
   else {
     avatarElement.remove();
   }
-  photosElement.innerHTML = '';
-  if (photosArray.length) {
-    photosElement.append(...photosArray);
-  }
-  else {
-    photosElement.remove();
-  }
-  return getPopup;
-  // getFragment.appendChild(getPopup);
-
-  // return mapCanvas.appendChild(getFragment);
+  return popupTemplate;
 };
 
-const success = document.querySelector('#success').content.querySelector('.success');
-const error = document.querySelector('#error').content.querySelector('.error');
-const body = document.querySelector('body');
-const successClone = success.cloneNode(true);
-const errorClone = error.cloneNode(true);
+const successPopup = document.querySelector('#success').content.querySelector('.success');
+const errorPopup = document.querySelector('#error').content.querySelector('.error');
 
-const appendInBody = function (element) {
-  body.appendChild(element);
-  document.addEventListener('keydown',(evt) => {
-    if (isEscapeKey(evt)) {
-      element.remove();
-    }
-  });
-  element.addEventListener('click', () => {
-    element.remove();
-  });
+const onSuccessPopupClick = () => removeSuccessPopup();
+const onErrorPopupClick = () => removeErrorPopup();
+
+const onSuccessPopupEscKeydown = (evt) => {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
+    removeSuccessPopup();
+  }
+};
+const onErrorPopupEscKeydown = (evt) => {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
+    removeErrorPopup();
+  }
 };
 
+const createSuccessPopup = () => {
+  const popup = successPopup.cloneNode(true);
+  document.body.append(popup);
+  document.addEventListener('click', onSuccessPopupClick);
+  document.addEventListener('keydown', onSuccessPopupEscKeydown);
+};
 
-export {createNewOffer, successClone, errorClone, appendInBody};
+function removeSuccessPopup() {
+  const newSuccessPopup = document.querySelector('body > .success');
+  newSuccessPopup.remove();
+  document.removeEventListener('click', onSuccessPopupClick);
+  document.removeEventListener('keydown', onSuccessPopupEscKeydown);
+}
+
+const createErrorPopup = () => {
+  const popup = errorPopup.cloneNode(true);
+  document.body.append(popup);
+  document.addEventListener('click', onErrorPopupClick);
+  document.addEventListener('keydown', onErrorPopupEscKeydown);
+};
+
+function removeErrorPopup() {
+  const newErrorPopup = document.querySelector('body > .error');
+  newErrorPopup.remove();
+  document.removeEventListener('click', onErrorPopupClick);
+  document.removeEventListener('keydown', onErrorPopupEscKeydown);
+}
+
+
+export {createNewOffer,  createSuccessPopup, createErrorPopup};
 

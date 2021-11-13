@@ -1,5 +1,5 @@
 import {resetForm, adForm} from './form.js';
-import {successClone, errorClone, appendInBody} from './card.js';
+import {createSuccessPopup, createErrorPopup} from './card.js';
 import {showAlert} from './utils.js';
 import  {createMarker} from './map.js';
 
@@ -37,14 +37,14 @@ const sendData = () => {
     )
       .then((response) => {
         if (response.ok) {
-          appendInBody(successClone);
+          createSuccessPopup();
           resetForm();
         } else {
-          appendInBody(errorClone);
+          createErrorPopup();
         }
       })
       .catch(() => {
-        appendInBody(errorClone);
+        createErrorPopup();
       });
   });
 };
