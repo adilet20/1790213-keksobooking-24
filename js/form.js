@@ -1,3 +1,4 @@
+import {resetPreviewImages} from './previews.js';
 
 const adForm = document.querySelector('.ad-form');
 const mapFilters = document.querySelector('.map__filters');
@@ -29,7 +30,7 @@ const MAX_CAPACITY = 0;
 const MAX_ROOMS = 100;
 
 
-const PRICES_OF_TYPES = {
+const priceType = {
   bungalow: 0,
   flat: 1000,
   hotel: 3000,
@@ -44,14 +45,15 @@ const adCapacity = adForm.querySelector('#capacity');
 const adRooms = adForm.querySelector('#room_number');
 const adTimeIn = adForm.querySelector('#timein');
 const adTimeOut = adForm.querySelector('#timeout');
-const formSubmit = document.querySelector('.ad-form__submit');
+const submitButton = document.querySelector('.ad-form__submit');
+const resetButton = document.querySelector('.ad-form__reset');
+const address = document.querySelector('#address');
 
-
-const checkPrice = () => {
+export const checkPrice = () => {
   if (adPrice.validity.valueMissing) {
     return adPrice.setCustomValidity('Пожалуйста, введите цену');
-  } else if (adPrice.value < PRICES_OF_TYPES[adType.value]) {
-    return adPrice.setCustomValidity(`Минимальная цена ${  PRICES_OF_TYPES[adType.value] } руб. за ночь`);
+  } else if (adPrice.value <priceType[adType.value]) {
+    return adPrice.setCustomValidity(`Минимальная цена ${priceType[adType.value] } руб. за ночь`);
   }
   return adPrice.setCustomValidity('');
 };
@@ -61,11 +63,11 @@ const checkCapacity = () => {
   const capacity= parseInt(adCapacity.value, 10);
 
   if (rooms  === MAX_ROOMS && capacity !== MAX_CAPACITY) {
-    return adCapacity.setCustomValidity('Выберите другой вариант');
+    return adCapacity.setCustomValidity('Не для гостей. Выберите другой вариант');
   } else if (adRooms.value !==  String(MAX_ROOMS) && adCapacity.value ===  String( MAX_CAPACITY)) {
-    return adCapacity.setCustomValidity('Выберите другой вариант');
+    return adCapacity.setCustomValidity('Измените количества гостей');
   } else if (adCapacity.value > adRooms.value) {
-    return adCapacity.setCustomValidity('Выберите другой вариант');
+    return adCapacity.setCustomValidity('Не должно превышать количество гостей. Выберите другой вариант');
   }
   return adCapacity.setCustomValidity('');
 };
@@ -85,7 +87,7 @@ adTitle.addEventListener('input', () => {
 });
 
 adType.addEventListener('change', () => {
-  adPrice.placeholder=`${  PRICES_OF_TYPES[adType.value] }`;
+  adPrice.placeholder=`${priceType[adType.value] }`;
 });
 
 adPrice.addEventListener('input', () => {
@@ -106,9 +108,29 @@ adTimeOut.addEventListener('change', () => {
   adTimeIn.value = adTimeOut.value;
 });
 
-formSubmit.addEventListener('click', () => {
+submitButton.addEventListener('click', () => {
   checkPrice();
   checkCapacity();
 });
 
-export {disableForm, activateForm, mapFilters, adForm};
+const resetForm = (resetMap, setCoordinates, renderSimilarAds) => {
+  resetButton.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    adForm.reset();
+    resetPreviewImages();
+    adPrice.placeholder = priceType.flat;
+    address.value = `${setCoordinates.lat}, ${setCoordinates.lng}`;
+    mapFilters.reset();
+    resetMap();
+    renderSimilarAds();
+  });
+};
+
+const setFilterChange = (cb) => {
+  mapFilters.addEventListener('change', () => {
+    cb();
+  });
+};
+
+
+export {disableForm, activateForm, mapFilters, adForm,  resetForm, setFilterChange, address, resetButton};
