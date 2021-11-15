@@ -1,52 +1,38 @@
-import {resetForm, adForm} from './form.js';
-import {createSuccessPopup, createErrorPopup} from './card.js';
-import {showAlert} from './utils.js';
-import  {createMarker} from './map.js';
+const DATE_MAP_URL= 'https://24.javascript.pages.academy/keksobooking/data';
+const SEND_FORM_URL = 'https://24.javascript.pages.academy/keksobooking';
 
-const OFFERS_QUANTITY = 10;
+const getData = (onSuccess, onError) => fetch(DATE_MAP_URL)
+  .then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
 
-const getData = () => {
-  fetch('https://24.javascript.pages.academy/keksobooking/data')
+    throw new Error('Не удалось загрузить данные');
+  })
+  .then((offers) => {
+    onSuccess(offers);
+  })
+  .catch((err) => {
+    onError(err);
+  });
+
+const sendData = (onSuccess, onError, body) => {
+  fetch(SEND_FORM_URL,
+    {
+      method: 'POST',
+      body,
+    },
+  )
     .then((response) => {
       if (response.ok) {
-        response.json()
-          .then((offers) => {
-            createMarker(offers.slice(0,OFFERS_QUANTITY));
-          });
-      } else {
-        showAlert('Не удалось загрузить данные');
+        return onSuccess();
       }
+
+      throw new Error('Не удалось загрузить данные');
     })
-    .catch(() => {
-      showAlert('Не удалось загрузить данные');},
-    );
+    .catch((err) => {
+      onError(err);
+    });
 };
 
-const sendData = () => {
-  adForm.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-
-    const formData = new FormData(evt.target);
-
-    fetch(
-      'https://24.javascript.pages.academy/keksobooking',
-      {
-        method: 'POST',
-        body: formData,
-      },
-    )
-      .then((response) => {
-        if (response.ok) {
-          createSuccessPopup();
-          resetForm();
-        } else {
-          createErrorPopup();
-        }
-      })
-      .catch(() => {
-        createErrorPopup();
-      });
-  });
-};
-
-export {sendData, getData};
+export {getData, sendData};

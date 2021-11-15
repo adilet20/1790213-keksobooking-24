@@ -69,6 +69,14 @@ export const showAlert = (message) => {
   }, ALERT_SHOW_TIME);
 };
 
+export const debounce = (callback, timeoutDelay) => {
+  let timeout;
+  return (...rest) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
 export const isEscapeKey = (evt) => evt.key === 'Escape';
 
 

@@ -1,4 +1,4 @@
-import  {resetMarker} from './map.js';
+import {resetPreviewImages} from './previews.js';
 
 const adForm = document.querySelector('.ad-form');
 const mapFilters = document.querySelector('.map__filters');
@@ -30,7 +30,7 @@ const MAX_CAPACITY = 0;
 const MAX_ROOMS = 100;
 
 
-const PRICES_OF_TYPES = {
+const priceType = {
   bungalow: 0,
   flat: 1000,
   hotel: 3000,
@@ -46,13 +46,14 @@ const adRooms = adForm.querySelector('#room_number');
 const adTimeIn = adForm.querySelector('#timein');
 const adTimeOut = adForm.querySelector('#timeout');
 const submitButton = document.querySelector('.ad-form__submit');
-// const resetButton = document.querySelector('.ad-form__reset');
+const resetButton = document.querySelector('.ad-form__reset');
+const address = document.querySelector('#address');
 
-const checkPrice = () => {
+export const checkPrice = () => {
   if (adPrice.validity.valueMissing) {
     return adPrice.setCustomValidity('Пожалуйста, введите цену');
-  } else if (adPrice.value < PRICES_OF_TYPES[adType.value]) {
-    return adPrice.setCustomValidity(`Минимальная цена ${  PRICES_OF_TYPES[adType.value] } руб. за ночь`);
+  } else if (adPrice.value <priceType[adType.value]) {
+    return adPrice.setCustomValidity(`Минимальная цена ${priceType[adType.value] } руб. за ночь`);
   }
   return adPrice.setCustomValidity('');
 };
@@ -86,7 +87,7 @@ adTitle.addEventListener('input', () => {
 });
 
 adType.addEventListener('change', () => {
-  adPrice.placeholder=`${  PRICES_OF_TYPES[adType.value] }`;
+  adPrice.placeholder=`${priceType[adType.value] }`;
 });
 
 adPrice.addEventListener('input', () => {
@@ -112,15 +113,24 @@ submitButton.addEventListener('click', () => {
   checkCapacity();
 });
 
-const clearForm = () => {
-  adForm.reset();
-  mapFilters.reset();
+const resetForm = (resetMap, setCoordinates, renderSimilarAds) => {
+  resetButton.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    adForm.reset();
+    resetPreviewImages();
+    adPrice.placeholder = priceType.flat;
+    address.value = `${setCoordinates.lat}, ${setCoordinates.lng}`;
+    mapFilters.reset();
+    resetMap();
+    renderSimilarAds();
+  });
 };
 
-const resetForm = () => {
-  clearForm();
-  resetMarker();
+const setFilterChange = (cb) => {
+  mapFilters.addEventListener('change', () => {
+    cb();
+  });
 };
 
 
-export {disableForm, activateForm, mapFilters, adForm,  resetForm};
+export {disableForm, activateForm, mapFilters, adForm,  resetForm, setFilterChange, address, resetButton};
