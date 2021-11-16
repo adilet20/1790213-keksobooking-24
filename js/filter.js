@@ -1,3 +1,4 @@
+import {checkElement} from './utils.js';
 
 const DEFAULT_VALUE = 'any';
 const PRICE_LOW = 10000;
@@ -27,9 +28,9 @@ const hasOverlapPrice = (similarAd, price) => {
 };
 
 const hasOverlapFeatures = (similarAd, features) => {
-  if (Array.isArray(features) && Array.isArray(similarAd) ) {
+  if (checkElement(features) && checkElement(similarAd) ) {
     return true;
-  } else if (Array.isArray(similarAd) ) {
+  } else if (checkElement(similarAd) ) {
     return false;
   }
   return Array.from(features).every( (feature) => similarAd.includes(feature.value) );
@@ -44,7 +45,7 @@ const selectAds = (similarAd) => {
 
   const selectedGuests = (similarAd.offer.guests === +guestsFilter.value) || (guestsFilter.value === Default.GUESTS);
 
-  const featuresChecked = document.querySelectorAll('#housing-features input:checked');
+  const featuresChecked = document.querySelectorAll('.map__checkbox:checked');
   const selectedFeatures = hasOverlapFeatures(similarAd.offer.features, featuresChecked);
 
   return (selectedType && selectedPrice && selectedRooms && selectedGuests && selectedFeatures);

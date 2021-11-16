@@ -4,7 +4,8 @@ import {createMap, createMarker, mapCoordinates, mainMarker, fillMap, resetMarke
 import {getData, sendData} from './api.js';
 import {showAlert, debounce} from './utils.js';
 import {selectAds} from './filter.js';
-import './previews.js';
+import {setPreviews} from './previews.js';
+setPreviews();
 
 const  OFFERS_QUANTITY = 10;
 const RERENDER_DELAY = 300;
@@ -24,7 +25,7 @@ disableForm(adForm);
 disableForm(mapFilters);
 
 const map = createMap();
-export const layerGroupMarker = L.layerGroup().addTo(map);
+const layerGroupMarker = L.layerGroup().addTo(map);
 
 map.on('load', () => {
   address.value = `${mapCoordinates.lat}, ${mapCoordinates.lng}`;

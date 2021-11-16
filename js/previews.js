@@ -1,57 +1,83 @@
-const FILE_TYPES = ['jpg', 'jpeg', 'png'];
+import { showAlert } from './utils.js';
+
+const FILE_TYPES = [
+  'image/apng',
+  'image/avif',
+  'image/gif',
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/svg+xml',
+  'image/webp',
+  'image/bmp',
+  'image/x-icon',
+  'image/tiff',
+];
+
+
 const IMAGE_STYLE = 'width: 70px; height: 70px; object-fit: cover';
-const CONTAINER_STYLE = 'padding: 0';
+
 const DEFAULT_AVATAR_URL = 'img/muffin-grey.svg';
+const ALERT_MESSAGE = 'Неподдерживаемый формат файла';
 
-const avatarFileChooser = document.querySelector('#avatar');
-const housePhotoFileChooser = document.querySelector('#images');
-const avatarPreview = document.querySelector('.ad-form-header__preview');
-const housePhotoPreview = document.querySelector('.ad-form__photo');
+const avatarInput = document.querySelector('.ad-form-header__input');
+const avatarPreview = document.querySelector('.ad-form-header__preview img');
+const photoInput = document.querySelector('.ad-form__input');
+const photosPreviewContainer = document.querySelector('.ad-form__photo');
 
-const hasMatchType = (file) => {
-  const fileName = file.name.toLowerCase();
-  return FILE_TYPES.some((fileType) => fileName.endsWith(fileType));
-};
+const setAvatarPreview = (input, preview) => {
+  const file = input.files[0];
+  const matches = FILE_TYPES.includes(file.type);
 
-const onAvatarFileChooserChange = (fileChooser, preview) => {
-  const file = fileChooser.files[0];
-  const img = preview.firstElementChild;
-
-  if ( hasMatchType(file) ) {
-    img.style = IMAGE_STYLE;
-    preview.style = CONTAINER_STYLE;
-    img.src = URL.createObjectURL(file);
+  if (matches) {
+    const previewFotoImg = document.createElement('img');
+    preview.src = URL.createObjectURL(file);
+    previewFotoImg.style = IMAGE_STYLE;
+  } else {
+    showAlert(ALERT_MESSAGE);
   }
 };
 
-const onHousePhotoFileChooserChange = (fileChooser, preview) => {
-  const file = fileChooser.files[0];
+const setPhotoPreview = (input, previewContainer) => {
+  const file = input.files[0];
+  const matches = FILE_TYPES.includes(file.type);
 
-  if ( hasMatchType(file) ) {
-    let img;
-
-    if (Array.isArray(preview.children) ) {
-      img = document.createElement('img');
-      img.style = IMAGE_STYLE;
-      img.src = URL.createObjectURL(file);
-      preview.appendChild(img);
-    } else {
-      img = preview.firstElementChild;
-      img.src = URL.createObjectURL(file);
-    }
+  if (matches) {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.addEventListener('load', () => {
+      previewContainer.style.backgroundImage = `url("${reader.result}")`;
+      previewContainer.style.backgroundSize = 'cover';
+    });
+  } else {
+    showAlert(ALERT_MESSAGE);
   }
+};
+
+const onAvatarChange = () => setAvatarPreview(avatarInput, avatarPreview);
+
+const onPhotoChange = () => setPhotoPreview(photoInput, photosPreviewContainer);
+
+const setPreviews = () => {
+  avatarInput.addEventListener('change', onAvatarChange);
+  photoInput.addEventListener('change', onPhotoChange);
+};
+
+const clearAvatarPreview = () => {
+  avatarInput.value = '';
+  avatarPreview.src = DEFAULT_AVATAR_URL;
+};
+
+const clearPhotosPreview = () => {
+  photosPreviewContainer.style.backgroundImage = 'none';
 };
 
 const resetPreviewImages = () => {
-  avatarPreview.firstElementChild.src = DEFAULT_AVATAR_URL;
-  avatarPreview.style = '';
-  avatarPreview.firstElementChild.style = '';
-  if (Array.isArray(housePhotoPreview.children) ) {
-    housePhotoPreview.firstElementChild.remove();
-  }
+  clearAvatarPreview();
+  clearPhotosPreview();
 };
 
-avatarFileChooser.addEventListener('change', () => onAvatarFileChooserChange(avatarFileChooser, avatarPreview));
-housePhotoFileChooser.addEventListener('change', () => onHousePhotoFileChooserChange(housePhotoFileChooser, housePhotoPreview));
-
-export {resetPreviewImages};
+export {
+  setPreviews,
+  resetPreviewImages
+};
