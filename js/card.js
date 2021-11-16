@@ -117,15 +117,9 @@ const errorPopup = document.querySelector('#error').content.querySelector('.erro
 // const createSuccessPopup = () => showPopup(successPopup);
 // const createErrorPopup = () => showPopup(errorPopup);
 const showPopup = (popupTemplate) => {
-
-  // Определяем функции в явном виде, чтобы мы эти обработчики могли потом удалить
-  // Приходится переменную объявить заранее, т.к они нам нужны в процедуре удаления.
-  // А процедура удаления содержится в этих же функциях. Циклическая зависимость получается, так мы с ней справляемся
-  // Есть другие варианты как можно это сделать, но линтер не разрешает ими воспользоваться.
   let onEscKeyDown = () => {};
   let onDocumentClick = () => {};
 
-  // Удаление попапа + удаление обработчиков
   const removePopup = () => {
     popupTemplate.remove();
     document.removeEventListener('keydown', onEscKeyDown);
