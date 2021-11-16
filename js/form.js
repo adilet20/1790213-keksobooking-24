@@ -1,4 +1,4 @@
-import {resetPreviewImages} from './previews.js';
+import {resetPreviewImages } from './previews.js';
 
 const adForm = document.querySelector('.ad-form');
 const mapFilters = document.querySelector('.map__filters');
@@ -117,7 +117,7 @@ const resetForm = (resetMap, setCoordinates, renderSimilarAds) => {
   resetButton.addEventListener('click', (evt) => {
     evt.preventDefault();
     adForm.reset();
-    resetPreviewImages();
+    resetPreviewImages ();
     adPrice.placeholder = priceType.flat;
     address.value = `${setCoordinates.lat}, ${setCoordinates.lng}`;
     mapFilters.reset();

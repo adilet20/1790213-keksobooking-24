@@ -77,6 +77,13 @@ export const debounce = (callback, timeoutDelay) => {
   };
 };
 
+export const checkElement = (element) => {
+  if (element === '' || element === undefined ||element.length === 0) {
+    return true;
+  }
+  return false;
+};
+
 export const isEscapeKey = (evt) => evt.key === 'Escape';
 
 
