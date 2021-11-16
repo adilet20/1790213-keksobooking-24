@@ -14,11 +14,11 @@ const FILE_TYPES = [
   'image/tiff',
 ];
 
+
 const IMAGE_STYLE = 'width: 70px; height: 70px; object-fit: cover';
 
 const DEFAULT_AVATAR_URL = 'img/muffin-grey.svg';
 const ALERT_MESSAGE = 'Неподдерживаемый формат файла';
-
 
 const avatarInput = document.querySelector('.ad-form-header__input');
 const avatarPreview = document.querySelector('.ad-form-header__preview img');
