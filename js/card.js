@@ -118,17 +118,29 @@ const errorPopup = document.querySelector('#error').content.querySelector('.erro
 // const createErrorPopup = () => showPopup(errorPopup);
 
 const showPopup = (popupTemplate) => {
-  document.body.append(popupTemplate);
-  document.addEventListener ('click', () =>{
+  let onEscKeyDown = () => {};
+  let onDocumentClick = () => {};
+
+  const removePopup = () => {
     popupTemplate.remove();
-  });
-  document.addEventListener ('keydown', (evt) => {
-    if (isEscapeKey(evt))  {
+    document.removeEventListener('keydown', onEscKeyDown);
+    document.removeEventListener('click', onDocumentClick);
+  };
+
+  onEscKeyDown = (evt) => {
+    if (isEscapeKey(evt)) {
       evt.preventDefault();
-      popupTemplate.remove();
-      document.removeEventListener('keydown', (evt));
+      removePopup();
     }
-  });
+  };
+
+  onDocumentClick = () => {
+    removePopup();
+  };
+
+  document.body.append(popupTemplate);
+  document.addEventListener ('click', onDocumentClick);
+  document.addEventListener ('keydown', onEscKeyDown);
 };
 
 const createSuccessPopup = () => showPopup(successPopup);
