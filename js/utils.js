@@ -85,5 +85,3 @@ export const checkElement = (element) => {
 };
 
 export const isEscapeKey = (evt) => evt.key === 'Escape';
-
-
