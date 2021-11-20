@@ -12,13 +12,19 @@ const RERENDER_DELAY = 300;
 
 const renderSimilarAds = (similarAds, markerGroup) => {
   markerGroup.clearLayers();
-  similarAds
-    .slice()
-    .filter(selectAds)
-    .slice(0, OFFERS_QUANTITY)
-    .forEach((similarAd) => {
-      createMarker(similarAd, markerGroup);
-    });
+  const filteredAds = [];
+
+  for (const ad of similarAds) {
+    if (selectAds(ad)) {
+      filteredAds.push(ad);
+    }
+
+    if (filteredAds.length === OFFERS_QUANTITY ) {
+      break;
+    }
+  }
+
+  filteredAds.forEach((ad) => createMarker(ad, markerGroup));
 };
 
 disableForm(adForm);
